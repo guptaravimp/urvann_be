@@ -24,6 +24,38 @@ app.get("/",(req,res)=>{
     res.send("App is running fine");
 })
 
+// Test database connection endpoint
+app.get("/test-db", async (req, res) => {
+    try {
+        const mongoose = require("mongoose");
+        const connectionState = mongoose.connection.readyState;
+        const states = {
+            0: 'disconnected',
+            1: 'connected',
+            2: 'connecting',
+            3: 'disconnecting'
+        };
+        
+        res.json({
+            success: true,
+            message: "Database connection test",
+            connectionState: states[connectionState],
+            readyState: connectionState,
+            env: {
+                hasMongoUrl: !!process.env.MONGODB_URL,
+                nodeEnv: process.env.NODE_ENV,
+                port: process.env.PORT
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Database test failed",
+            error: error.message
+        });
+    }
+});
+
 // CORS configuration for production
 app.use(cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",

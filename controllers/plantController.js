@@ -126,13 +126,30 @@ const getAllCategories = async(req, res) => {
 
 const getAllPlants = async(req, res) => {
     try {
+        console.log('🔍 getAllPlants function called');
+        
+        // Check database connection
+        const mongoose = require("mongoose");
+        if (mongoose.connection.readyState !== 1) {
+            console.error('❌ Database not connected. ReadyState:', mongoose.connection.readyState);
+            return res.status(500).json({
+                success: false,
+                message: "Database connection not established",
+                readyState: mongoose.connection.readyState
+            });
+        }
+        
+        console.log('✅ Database connected, fetching plants...');
         const plants = await Plant.find({}).populate('plantCategories', 'categoryName description');
+        
+        console.log(`✅ Found ${plants.length} plants`);
         return res.status(200).json({
             success: true,
             message: "Plants fetched successfully",
             plants,
         })
     } catch (error) {
+        console.error('❌ Error in getAllPlants:', error);
         return res.status(500).json({
             success: false,
             message: "Error fetching plants",

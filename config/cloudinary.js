@@ -13,11 +13,11 @@ exports.cloudinaryConnect=()=>{
             api_secret: process.env.API_SECRET,
         });
 
-        console.log('✅Cloudinary configured successfully');
+        console.log('Cloudinary configured successfully');
         
         // Test the connection
         cloudinary.api.ping()
-            .then(() => console.log('✅ Cloudinary connection test successful'))
+            .then(() => console.log(' Cloudinary connection test successful'))
             .catch(err => console.error(' Cloudinary connection test failed:', err));
             
     }catch(error){
