@@ -32,11 +32,19 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use(fileupload({
-    useTempFiles: true,
-    tempFileDir: '/tmp/',
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
-}));
+// File upload middleware with better error handling
+try {
+    app.use(fileupload({
+        useTempFiles: true,
+        tempFileDir: '/tmp/',
+        limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
+        debug: process.env.NODE_ENV === 'development'
+    }));
+    console.log('✅ File upload middleware configured successfully');
+} catch (error) {
+    console.error('❌ Error configuring file upload middleware:', error);
+    process.exit(1);
+}
 
 ///database connection 
 DBConnection()
@@ -60,4 +68,6 @@ app.use((error, req, res, next) => {
 app.listen(PORT,()=>{
     console.log("✅ App is running on PORT", PORT)
     console.log("🌍 Environment:", process.env.NODE_ENV || 'development')
+    console.log("📦 Node version:", process.version)
+    console.log("🔧 Platform:", process.platform)
 })
